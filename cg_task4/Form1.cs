@@ -17,6 +17,7 @@ namespace cg_task4
 
         private PaintCell[] cells = new PaintCell[0];
         private float cellSize;
+        private int selectedI = 0, selectedJ = 0;
 
         private Action[] actions = new Action[0];
         private int actionIndex = 0;
@@ -114,10 +115,14 @@ namespace cg_task4
                 Action action = actions[actionIndex++];
                 switch (action.Operation)
                 {
-                    case Operation.SELECT:
+                    case Operation.COMPARE:
                         {
+                            cells[selectedI].IsSelected = false;
+                            cells[selectedJ].IsSelected = false;
                             cells[action.I].IsSelected = true;
                             cells[action.J].IsSelected = true;
+                            selectedI = action.I;
+                            selectedJ = action.J;
                             compLabel.Text = (++compCount).ToString();
                             break;
                         }
@@ -125,13 +130,6 @@ namespace cg_task4
                         {
                             Swap(action.I, action.J);
                             swapLabel.Text = (++swapCount).ToString();
-                            break;
-                        }
-                    case Operation.DESELECT:
-                        {
-                            cells[action.I].IsSelected = false;
-                            cells[action.J].IsSelected = false;
-                            ForwardButton_Click(sender, e);
                             break;
                         }
                 }
@@ -154,12 +152,12 @@ namespace cg_task4
                 Action action = actions[--actionIndex];
                 switch (action.Operation)
                 {
-                    case Operation.SELECT:
+                    case Operation.COMPARE:
                         {
                             cells[action.I].IsSelected = false;
                             cells[action.J].IsSelected = false;
+                            GoTillCompare();
                             compLabel.Text = (--compCount).ToString();
-                            BackButton_Click(sender, e);
                             break;
                         }
                     case Operation.SWAP:
@@ -168,17 +166,27 @@ namespace cg_task4
                             swapLabel.Text = (--swapCount).ToString();
                             break;
                         }
-                    case Operation.DESELECT:
-                        {
-                            cells[action.I].IsSelected = true;
-                            cells[action.J].IsSelected = true;
-                            break;
-                        }
                 }
             }
             else
             {
                 MessageBox.Show("Start of the sort!");
+            }
+        }
+
+        private void GoTillCompare()
+        {
+            for (int i = actionIndex - 1; i >= 0; i--)
+            {
+                Action action = actions[i];
+                if (action.Operation == Operation.COMPARE)
+                {
+                    cells[action.I].IsSelected = true;
+                    cells[action.J].IsSelected = true;
+                    selectedI = action.I;
+                    selectedJ = action.J;
+                    break;
+                }
             }
         }
 
@@ -200,8 +208,8 @@ namespace cg_task4
                 locationX += cellSize;
             }
             swapCount = compCount = 0;
-            compLabel.Text = swapCount.ToString();
-            swapLabel.Text = compCount.ToString();
+            compLabel.Text = compCount.ToString();
+            swapLabel.Text = swapCount.ToString();
             actions = Sorts.StoogeSort(arr);
         }
     }

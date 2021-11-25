@@ -16,7 +16,7 @@ namespace cg_task4
             if (l >= r)
                 return;
 
-            actions.Add(new Action(Operation.SELECT, l, r));
+            actions.Add(new Action(Operation.COMPARE, l, r));
             if (arr[l] > arr[r])
             {
                 actions.Add(new Action(Operation.SWAP, l, r));
@@ -24,7 +24,6 @@ namespace cg_task4
                 arr[l] = arr[r];
                 arr[r] = t;
             }
-            actions.Add(new Action(Operation.DESELECT, l, r));
 
             if (r - l + 1 > 2)
             {

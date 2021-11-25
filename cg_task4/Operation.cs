@@ -6,8 +6,7 @@ namespace cg_task4
 {
     public enum Operation
     {
-        SELECT,
+        COMPARE,
         SWAP,
-        DESELECT
     }
 }
