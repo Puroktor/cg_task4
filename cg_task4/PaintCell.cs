@@ -19,14 +19,11 @@
         }
         public string StrValue { private set; get; }
 
-        public bool IsSelected { set; get; }
-
-        public PaintCell(float locationX, float locationY, int value, bool isSelected)
+        public PaintCell(float locationX, float locationY, int value)
         {
             LocationX = locationX;
             LocationY = locationY;
             IntValue = value;
-            IsSelected = isSelected;
         }
     }
 }

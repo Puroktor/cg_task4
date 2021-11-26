@@ -17,12 +17,11 @@ namespace cg_task4
 
         private PaintCell[] cells = new PaintCell[0];
         private float cellSize;
-        private int selectedI = 0, selectedJ = 0;
+        private int selectedI = -1, selectedJ = -1;
 
         private Action[] actions = new Action[0];
         private int actionIndex = 0;
-        private int swapCount = 0;
-        private int compCount = 0;
+        private int swapCount = 0, compCount = 0;
 
         private int swapIndex1 = -1, swapIndex2 = -1;
         private float centerX, centerY, radius;
@@ -40,35 +39,40 @@ namespace cg_task4
         {
             int w = pictureBox.Width, h = pictureBox.Height;
             if (w == 0 || h == 0)
-            {
                 return;
-            }
+
             CalcSwapCoords();
             Image image = new Bitmap(w, h);
             using Graphics g = Graphics.FromImage(image);
             g.Clear(pictureBox.BackColor);
-            PaintCells(g, w, h, false);
-            PaintCells(g, w, h, true);
+            PaintCells(g, w, h);
             pictureBox.Image?.Dispose();
             pictureBox.Image = image;
         }
 
-        private void PaintCells(Graphics g, int w, int h, bool selected)
+        private void PaintCells(Graphics g, int w, int h)
         {
-            Pen pen = selected ? selectedPen : normalPen;
-            foreach (var cell in cells)
+            for (int i = 0; i < cells.Length; i++)
             {
-                if (cell.IsSelected != selected)
-                {
+                if (i == selectedI || i == selectedJ)
                     continue;
-                }
-                float startX = cell.LocationX * w, startY = cell.LocationY * h;
-                float sizeX = cellSize * w, sizeY = cellSize * h;
-                g.DrawRectangle(pen, startX, startY, sizeX, sizeY);
-                g.DrawString(cell.StrValue, font, fontBrush,
-                    startX + sizeX / 2 - FONT_SIZE * cell.StrValue.Length / 2,
-                    startY + sizeY / 2 - FONT_SIZE / 2);
+
+                PaintCell(cells[i], g, w, h, normalPen);
             }
+            if (selectedI != -1)
+                PaintCell(cells[selectedI], g, w, h, selectedPen);
+            if (selectedJ != -1)
+                PaintCell(cells[selectedJ], g, w, h, selectedPen);
+        }
+
+        private void PaintCell(PaintCell cell, Graphics g, int w, int h, Pen pen)
+        {
+            float startX = cell.LocationX * w, startY = cell.LocationY * h;
+            float sizeX = cellSize * w, sizeY = cellSize * h;
+            g.DrawRectangle(pen, startX, startY, sizeX, sizeY);
+            g.DrawString(cell.StrValue, font, fontBrush,
+                startX + sizeX / 2 - FONT_SIZE * cell.StrValue.Length / 2,
+                startY + sizeY / 2 - FONT_SIZE / 2);
         }
 
         private void CalcSwapCoords()
@@ -117,10 +121,6 @@ namespace cg_task4
                 {
                     case Operation.COMPARE:
                         {
-                            cells[selectedI].IsSelected = false;
-                            cells[selectedJ].IsSelected = false;
-                            cells[action.I].IsSelected = true;
-                            cells[action.J].IsSelected = true;
                             selectedI = action.I;
                             selectedJ = action.J;
                             compLabel.Text = (++compCount).ToString();
@@ -154,8 +154,7 @@ namespace cg_task4
                 {
                     case Operation.COMPARE:
                         {
-                            cells[action.I].IsSelected = false;
-                            cells[action.J].IsSelected = false;
+                            selectedI = selectedJ = -1;
                             GoTillCompare();
                             compLabel.Text = (--compCount).ToString();
                             break;
@@ -181,8 +180,6 @@ namespace cg_task4
                 Action action = actions[i];
                 if (action.Operation == Operation.COMPARE)
                 {
-                    cells[action.I].IsSelected = true;
-                    cells[action.J].IsSelected = true;
                     selectedI = action.I;
                     selectedJ = action.J;
                     break;
@@ -204,12 +201,13 @@ namespace cg_task4
             float locationY = 0.5f - cellSize / 2;
             for (int i = 0; i < arr.Length; i++)
             {
-                cells[i] = new PaintCell(locationX, locationY, arr[i], false);
+                cells[i] = new PaintCell(locationX, locationY, arr[i]);
                 locationX += cellSize;
             }
-            swapCount = compCount = 0;
+            actionIndex = swapCount = compCount = 0;
             compLabel.Text = compCount.ToString();
             swapLabel.Text = swapCount.ToString();
+            selectedI = selectedJ = -1;
             actions = Sorts.StoogeSort(arr);
         }
     }
