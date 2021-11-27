@@ -10,16 +10,16 @@ namespace cg_task4
         private const int FPS = 30;
         private const float FONT_SIZE = 12f;
 
-        private readonly Pen normalPen = new Pen(Color.Black, 2);
-        private readonly Pen selectedPen = new Pen(Color.Red, 2);
+        private readonly Pen normalPen = new(Color.Black, 2);
+        private readonly Pen selectedPen = new(Color.Red, 2);
         private readonly Brush fontBrush = new SolidBrush(Color.Black);
-        private readonly Font font = new Font(FontFamily.GenericMonospace, FONT_SIZE, FontStyle.Bold);
+        private readonly Font font = new(FontFamily.GenericMonospace, FONT_SIZE, FontStyle.Bold);
 
-        private PaintCell[] cells = new PaintCell[0];
+        private PaintCell[] cells = Array.Empty<PaintCell>();
         private float cellSize;
         private int selectedI = -1, selectedJ = -1;
 
-        private Action[] actions = new Action[0];
+        private Action[] actions = Array.Empty<Action>();
         private int actionIndex = 0;
         private int swapCount = 0, compCount = 0;
 
@@ -77,7 +77,7 @@ namespace cg_task4
 
         private void CalcSwapCoords()
         {
-            if (swapIndex1 != -1 && swapIndex2 != -1)
+            if (!(swapIndex1 == -1 || swapIndex2 == -1))
             {
                 float cos = (float)Math.Cos(t);
                 float sin = (float)Math.Sin(t);
@@ -109,7 +109,7 @@ namespace cg_task4
 
         private void ForwardButton_Click(object sender, EventArgs e)
         {
-            if (swapIndex1 != -1 && swapIndex2 != -1)
+            if (!(swapIndex1 == -1 || swapIndex2 == -1))
             {
                 t = Math.PI;
                 CalcSwapCoords();
@@ -120,18 +120,16 @@ namespace cg_task4
                 switch (action.Operation)
                 {
                     case Operation.COMPARE:
-                        {
-                            selectedI = action.I;
-                            selectedJ = action.J;
-                            compLabel.Text = (++compCount).ToString();
-                            break;
-                        }
+                        selectedI = action.I;
+                        selectedJ = action.J;
+                        compLabel.Text = (++compCount).ToString();
+                        break;
+
                     case Operation.SWAP:
-                        {
-                            Swap(action.I, action.J);
-                            swapLabel.Text = (++swapCount).ToString();
-                            break;
-                        }
+                        Swap(action.I, action.J);
+                        swapLabel.Text = (++swapCount).ToString();
+                        break;
+
                 }
             }
             else
@@ -153,18 +151,16 @@ namespace cg_task4
                 switch (action.Operation)
                 {
                     case Operation.COMPARE:
-                        {
-                            selectedI = selectedJ = -1;
-                            GoTillCompare();
-                            compLabel.Text = (--compCount).ToString();
-                            break;
-                        }
+                        selectedI = selectedJ = -1;
+                        GoTillCompare();
+                        compLabel.Text = (--compCount).ToString();
+                        break;
+
                     case Operation.SWAP:
-                        {
-                            Swap(action.I, action.J);
-                            swapLabel.Text = (--swapCount).ToString();
-                            break;
-                        }
+                        Swap(action.I, action.J);
+                        swapLabel.Text = (--swapCount).ToString();
+                        break;
+
                 }
             }
             else
