@@ -30,9 +30,19 @@ namespace cg_task4
         public Form1()
         {
             InitializeComponent();
+            AcceptButton = readButton;
             timer.Interval = 1000 / FPS;
             timer.Tick += PaintFrame;
+            actionTimer.Interval = 1500;
+            actionTimer.Tick += ActionTimer_Tick;
             timer.Start();
+        }
+
+        private void ActionTimer_Tick(object sender, EventArgs e)
+        {
+            if (actionIndex == actions.Length)
+                StopActionTimer();
+            ForwardButton_Click(sender, e);
         }
 
         private void PaintFrame(object sender, EventArgs e)
@@ -87,7 +97,7 @@ namespace cg_task4
                 cells[swapIndex2].LocationY = centerY + radius * sin;
 
                 t += dt;
-                if (t > Math.PI + 1e-6)
+                if (t > Math.PI + 1e-7)
                 {
                     swapIndex1 = swapIndex2 = -1;
                 }
@@ -109,7 +119,10 @@ namespace cg_task4
 
         private void ForwardButton_Click(object sender, EventArgs e)
         {
-            if (!(swapIndex1 == -1 || swapIndex2 == -1))
+            if (sender is not Timer && actionTimer.Enabled)
+                StopActionTimer();
+
+            if (swapIndex1 != -1 && swapIndex2 != -1)
             {
                 t = Math.PI;
                 CalcSwapCoords();
@@ -134,12 +147,15 @@ namespace cg_task4
             }
             else
             {
+                selectedI = selectedJ = -1;
                 MessageBox.Show("Array is sorted!");
             }
         }
 
         private void BackButton_Click(object sender, EventArgs e)
         {
+            if (actionTimer.Enabled)
+                StopActionTimer();
             if (swapIndex1 != -1 && swapIndex2 != -1)
             {
                 t = Math.PI;
@@ -164,9 +180,7 @@ namespace cg_task4
                 }
             }
             else
-            {
                 MessageBox.Show("Start of the sort!");
-            }
         }
 
         private void GoTillCompare()
@@ -185,7 +199,7 @@ namespace cg_task4
 
         private void Panel_Resize(object sender, EventArgs e)
         {
-            textBox.Width = ((Panel)sender).Width - 285;
+            textBox.Width = ((Panel)sender).Width - 450;
         }
 
         private void ReadButton_Click(object sender, EventArgs e)
@@ -200,11 +214,36 @@ namespace cg_task4
                 cells[i] = new PaintCell(locationX, locationY, arr[i]);
                 locationX += cellSize;
             }
+            StopActionTimer();
+            swapIndex1 = swapIndex2 = -1;
+            t = 0;
             actionIndex = swapCount = compCount = 0;
             compLabel.Text = compCount.ToString();
             swapLabel.Text = swapCount.ToString();
             selectedI = selectedJ = -1;
             actions = Sorts.StoogeSort(arr);
+        }
+
+        private void PlayButton_Click(object sender, EventArgs e)
+        {
+            actionTimer.Start();
+            animationLabel.Text = "On";
+            animationLabel.ForeColor = Color.Red;
+            ActionTimer_Tick(actionTimer, e);
+        }
+
+        private void StopButton_Click(object sender, EventArgs e)
+        {
+            StopActionTimer();
+            t = Math.PI;
+            CalcSwapCoords();
+        }
+
+        private void StopActionTimer()
+        {
+            actionTimer.Stop();
+            animationLabel.Text = "Off";
+            animationLabel.ForeColor = Color.Black;
         }
     }
 }

@@ -32,8 +32,10 @@ namespace cg_task4
             this.components = new System.ComponentModel.Container();
             this.pictureBox = new System.Windows.Forms.PictureBox();
             this.panel = new System.Windows.Forms.Panel();
-            this.textBox = new System.Windows.Forms.TextBox();
+            this.playButton = new System.Windows.Forms.Button();
             this.readButton = new System.Windows.Forms.Button();
+            this.textBox = new System.Windows.Forms.TextBox();
+            this.stopButton = new System.Windows.Forms.Button();
             this.backButton = new System.Windows.Forms.Button();
             this.forwardButton = new System.Windows.Forms.Button();
             this.timer = new System.Windows.Forms.Timer(this.components);
@@ -41,6 +43,8 @@ namespace cg_task4
             this.compLabel = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.swapLabel = new System.Windows.Forms.Label();
+            this.actionTimer = new System.Windows.Forms.Timer(this.components);
+            this.animationLabel = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox)).BeginInit();
             this.panel.SuspendLayout();
             this.SuspendLayout();
@@ -57,8 +61,10 @@ namespace cg_task4
             // 
             // panel
             // 
-            this.panel.Controls.Add(this.textBox);
+            this.panel.Controls.Add(this.playButton);
             this.panel.Controls.Add(this.readButton);
+            this.panel.Controls.Add(this.textBox);
+            this.panel.Controls.Add(this.stopButton);
             this.panel.Controls.Add(this.backButton);
             this.panel.Controls.Add(this.forwardButton);
             this.panel.Dock = System.Windows.Forms.DockStyle.Bottom;
@@ -68,25 +74,47 @@ namespace cg_task4
             this.panel.TabIndex = 0;
             this.panel.Resize += new System.EventHandler(this.Panel_Resize);
             // 
+            // playButton
+            // 
+            this.playButton.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.playButton.Location = new System.Drawing.Point(469, 25);
+            this.playButton.Name = "playButton";
+            this.playButton.Size = new System.Drawing.Size(75, 23);
+            this.playButton.TabIndex = 5;
+            this.playButton.Text = "Play";
+            this.playButton.UseVisualStyleBackColor = true;
+            this.playButton.Click += new System.EventHandler(this.PlayButton_Click);
+            // 
+            // readButton
+            // 
+            this.readButton.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.readButton.Location = new System.Drawing.Point(388, 25);
+            this.readButton.Name = "readButton";
+            this.readButton.Size = new System.Drawing.Size(75, 23);
+            this.readButton.TabIndex = 0;
+            this.readButton.Text = "Read";
+            this.readButton.UseVisualStyleBackColor = true;
+            this.readButton.Click += new System.EventHandler(this.ReadButton_Click);
+            // 
             // textBox
             // 
             this.textBox.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.textBox.Location = new System.Drawing.Point(25, 25);
             this.textBox.Name = "textBox";
-            this.textBox.Size = new System.Drawing.Size(515, 23);
+            this.textBox.Size = new System.Drawing.Size(350, 23);
             this.textBox.TabIndex = 3;
             this.textBox.Text = "5 4 3 2 1";
             // 
-            // readButton
+            // stopButton
             // 
-            this.readButton.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.readButton.Location = new System.Drawing.Point(550, 25);
-            this.readButton.Name = "readButton";
-            this.readButton.Size = new System.Drawing.Size(75, 23);
-            this.readButton.TabIndex = 2;
-            this.readButton.Text = "Read";
-            this.readButton.UseVisualStyleBackColor = true;
-            this.readButton.Click += new System.EventHandler(this.ReadButton_Click);
+            this.stopButton.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.stopButton.Location = new System.Drawing.Point(550, 25);
+            this.stopButton.Name = "stopButton";
+            this.stopButton.Size = new System.Drawing.Size(75, 23);
+            this.stopButton.TabIndex = 2;
+            this.stopButton.Text = "Stop";
+            this.stopButton.UseVisualStyleBackColor = true;
+            this.stopButton.Click += new System.EventHandler(this.StopButton_Click);
             // 
             // backButton
             // 
@@ -105,7 +133,7 @@ namespace cg_task4
             this.forwardButton.Location = new System.Drawing.Point(710, 25);
             this.forwardButton.Name = "forwardButton";
             this.forwardButton.Size = new System.Drawing.Size(75, 23);
-            this.forwardButton.TabIndex = 0;
+            this.forwardButton.TabIndex = 4;
             this.forwardButton.Text = "Forward";
             this.forwardButton.UseVisualStyleBackColor = true;
             this.forwardButton.Click += new System.EventHandler(this.ForwardButton_Click);
@@ -158,11 +186,23 @@ namespace cg_task4
             this.swapLabel.TabIndex = 7;
             this.swapLabel.Text = "0";
             // 
+            // animationLabel
+            // 
+            this.animationLabel.AutoSize = true;
+            this.animationLabel.BackColor = System.Drawing.Color.White;
+            this.animationLabel.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            this.animationLabel.Location = new System.Drawing.Point(12, 9);
+            this.animationLabel.Name = "animationLabel";
+            this.animationLabel.Size = new System.Drawing.Size(26, 15);
+            this.animationLabel.TabIndex = 8;
+            this.animationLabel.Text = "Off";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.animationLabel);
             this.Controls.Add(this.swapLabel);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.compLabel);
@@ -184,7 +224,7 @@ namespace cg_task4
         private System.Windows.Forms.PictureBox pictureBox;
         private System.Windows.Forms.Panel panel;
         private System.Windows.Forms.Button forwardButton;
-        private System.Windows.Forms.Button readButton;
+        private System.Windows.Forms.Button stopButton;
         private System.Windows.Forms.Button backButton;
         private System.Windows.Forms.TextBox textBox;
         private System.Windows.Forms.Timer timer;
@@ -192,6 +232,10 @@ namespace cg_task4
         private System.Windows.Forms.Label compLabel;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label swapLabel;
+        private System.Windows.Forms.Button playButton;
+        private System.Windows.Forms.Button readButton;
+        private System.Windows.Forms.Timer actionTimer;
+        private System.Windows.Forms.Label animationLabel;
     }
 }
 

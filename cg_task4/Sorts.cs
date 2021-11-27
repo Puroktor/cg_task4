@@ -6,7 +6,7 @@ namespace cg_task4
     {
         public static Action[] StoogeSort(int[] arr)
         {
-            List<Action> list = new List<Action>();
+            List<Action> list = new();
             StoogeSort(arr, 0, arr.Length - 1, list);
             return list.ToArray();
         }
