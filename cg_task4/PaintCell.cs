@@ -1,29 +1,28 @@
-﻿namespace cg_task4
+﻿namespace cg_task4;
+
+class PaintCell
 {
-    class PaintCell
+    public float LocationX { set; get; }
+
+    public float LocationY { set; get; }
+
+    private int intValue;
+
+    public int IntValue
     {
-        public float LocationX { set; get; }
-
-        public float LocationY { set; get; }
-
-        private int intValue;
-
-        public int IntValue
+        set
         {
-            set
-            {
-                intValue = value;
-                StrValue = intValue.ToString();
-            }
-            get => intValue;
+            intValue = value;
+            StrValue = intValue.ToString();
         }
-        public string StrValue { private set; get; }
+        get => intValue;
+    }
+    public string StrValue { private set; get; }
 
-        public PaintCell(float locationX, float locationY, int value)
-        {
-            LocationX = locationX;
-            LocationY = locationY;
-            IntValue = value;
-        }
+    public PaintCell(float locationX, float locationY, int value)
+    {
+        LocationX = locationX;
+        LocationY = locationY;
+        IntValue = value;
     }
 }

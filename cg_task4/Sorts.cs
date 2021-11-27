@@ -1,37 +1,36 @@
 ﻿using System.Collections.Generic;
 
-namespace cg_task4
+namespace cg_task4;
+
+public static class Sorts
 {
-    public static class Sorts
+    public static Action[] StoogeSort(int[] arr)
     {
-        public static Action[] StoogeSort(int[] arr)
+        List<Action> list = new();
+        StoogeSort(arr, 0, arr.Length - 1, list);
+        return list.ToArray();
+    }
+
+    private static void StoogeSort(int[] arr, int l, int r, List<Action> actions)
+    {
+        if (l >= r)
+            return;
+
+        actions.Add(new Action(Operation.COMPARE, l, r));
+        if (arr[l] > arr[r])
         {
-            List<Action> list = new();
-            StoogeSort(arr, 0, arr.Length - 1, list);
-            return list.ToArray();
+            actions.Add(new Action(Operation.SWAP, l, r));
+            int t = arr[l];
+            arr[l] = arr[r];
+            arr[r] = t;
         }
 
-        private static void StoogeSort(int[] arr, int l, int r, List<Action> actions)
+        if (r - l + 1 > 2)
         {
-            if (l >= r)
-                return;
-
-            actions.Add(new Action(Operation.COMPARE, l, r));
-            if (arr[l] > arr[r])
-            {
-                actions.Add(new Action(Operation.SWAP, l, r));
-                int t = arr[l];
-                arr[l] = arr[r];
-                arr[r] = t;
-            }
-
-            if (r - l + 1 > 2)
-            {
-                int t = (r - l + 1) / 3;
-                StoogeSort(arr, l, r - t, actions);
-                StoogeSort(arr, l + t, r, actions);
-                StoogeSort(arr, l, r - t, actions);
-            }
+            int t = (r - l + 1) / 3;
+            StoogeSort(arr, l, r - t, actions);
+            StoogeSort(arr, l + t, r, actions);
+            StoogeSort(arr, l, r - t, actions);
         }
     }
 }

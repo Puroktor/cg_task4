@@ -1,8 +1,7 @@
-﻿namespace cg_task4
+﻿namespace cg_task4;
+
+public enum Operation
 {
-    public enum Operation
-    {
-        COMPARE,
-        SWAP,
-    }
+    COMPARE,
+    SWAP,
 }
